@@ -222,33 +222,56 @@ float ChorusFindAudioProcessor::callChorusDetectionAPI(int sampleRate, int bitsP
     
     auto stream = std::make_unique<juce::FileInputStream>(tempFile);
 
-    if (stream->openedOk())
+    try
     {
-        url = url.withFileToUpload("audio", tempFile, "audio/wav");
-        std::unique_ptr<juce::InputStream> responseStream = url.createInputStream(juce::URL::InputStreamOptions(juce::URL::ParameterHandling::inAddress));
-
-        juce::String response = responseStream->readEntireStreamAsString();
-
-        // Parse the JSON response
-        juce::var result = juce::JSON::parse(response);
-
-        if (result.isObject())
+        if (stream->openedOk())
         {
-            juce::var resultValue = result.getProperty("result",0.5f);
+            url = url.withFileToUpload("audio", tempFile, "audio/wav");
+            std::unique_ptr<juce::InputStream> responseStream = url.createInputStream(juce::URL::InputStreamOptions(juce::URL::ParameterHandling::inAddress));
 
-            if (resultValue.isDouble())
+            juce::String response;
+
+            try
             {
-                // Extract the floating-point value
-                double floatValue = resultValue;
-                DBG("Float value from server response: " << floatValue);
-                return floatValue;
+                response = responseStream->readEntireStreamAsString();
             }
+            catch(const std::exception& e)
+            {
+                juce::Logger::writeToLog("Exception occurred: " + juce::String(e.what()));
+                juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
+                    "Error",
+                    "API is not accessible. Please make sure you are connected to the internet.");
+                return 0.5f;
+            }
+            
+
+            // Parse the JSON response
+            juce::var result = juce::JSON::parse(response);
+
+            if (result.isObject())
+            {
+                juce::var resultValue = result.getProperty("result", 0.5f);
+
+                if (resultValue.isDouble())
+                {
+                    // Extract the floating-point value
+                    double floatValue = resultValue;
+                    DBG("Float value from server response: " << floatValue);
+                    return floatValue;
+                }
+            }
+
+            DBG("Response from server: " << response);
         }
-
-        DBG("Response from server: " << response);
     }
-
-    return 0.5f;
+    catch (const std::exception& e)
+    {
+        // Handle any exceptions that occur
+        juce::Logger::writeToLog("Exception occurred: " +juce::String( e.what()));
+        juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
+            "Error",
+            "API is not accessible. Please make sure you are connected to the internet.");
+    }
 }
 
 void ChorusFindAudioProcessor::saveAudioBufferAsWav(const juce::AudioBuffer<float>& buffer, juce::File& fileToSave, int sampleRate, int bitsPerSample=24)
