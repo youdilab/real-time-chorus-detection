@@ -45,12 +45,17 @@ private:
     juce::Label lblSoloText;
     juce::Label lblChorusText;
 
+    juce::Label lblSoloPct;
+    juce::Label lblChorusPct;
+
     //Parameter-Component attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attchChorusAmount;
 
     void buttonClicked(juce::Button*) override;
     void updateEnableEval();
     void updateStatusText();
+
+    void updatePcts(float chorusPct);
 
     void timerCallback() override;
 

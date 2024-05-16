@@ -13,7 +13,7 @@
 ChorusFindAudioProcessorEditor::ChorusFindAudioProcessorEditor (ChorusFindAudioProcessor& p, juce::AudioProcessorValueTreeState& valueTree, State& state)
     : AudioProcessorEditor (&p), audioProcessor (p), apvts(valueTree)
     , procState(state)
-    , sldChorusAmount(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    , sldChorusAmount(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::NoTextBox)
     , btnEval(text::textEval)
     , lblSoloText(text::textSolo, text::textSolo)
     , lblChorusText(text::textChorus, text::textChorus)
@@ -24,6 +24,7 @@ ChorusFindAudioProcessorEditor::ChorusFindAudioProcessorEditor (ChorusFindAudioP
 
     //Slider Components
     addAndMakeVisible(sldChorusAmount);
+    sldChorusAmount.setEnabled(false);
 
     //Evaluate Button
     btnEval.addListener(this);
@@ -35,6 +36,11 @@ ChorusFindAudioProcessorEditor::ChorusFindAudioProcessorEditor (ChorusFindAudioP
 
     addAndMakeVisible(lblSoloText);
     addAndMakeVisible(lblChorusText);
+
+    addAndMakeVisible(lblSoloPct);
+    addAndMakeVisible(lblChorusPct);
+
+    updatePcts(sldChorusAmount.getValue());
 
     attchChorusAmount.reset(new juce::AudioProcessorValueTreeState::SliderAttachment(apvts, parameters::chorusAmount.id, sldChorusAmount));
 
@@ -62,14 +68,17 @@ void ChorusFindAudioProcessorEditor::resized()
 
     lblStatus.setBounds(20,80,150,30);
 
-    sldChorusAmount.setBounds(20, 130, 300, 30);
+    sldChorusAmount.setBounds(20, 120, 300, 30);
+    
     lblSoloText.setBounds(20, 140, 100, 30);
+    lblSoloPct.setBounds(20,160,100,30);
+    
     lblChorusText.setBounds(280, 140, 100, 30);
+    lblChorusPct.setBounds(280, 160, 100, 30);
 }
 
 void ChorusFindAudioProcessorEditor::buttonClicked(juce::Button*)
 {    
-    sldChorusAmount.setValue(75, juce::NotificationType::dontSendNotification);
     procState.goToNextState();
     updateEnableEval();
 }
@@ -111,9 +120,19 @@ void ChorusFindAudioProcessorEditor::updateStatusText()
     lblStatus.setText(statusText,juce::NotificationType::dontSendNotification);
 }
 
+void ChorusFindAudioProcessorEditor::updatePcts(float chorusPct)
+{
+    float soloPct = 100 - chorusPct;
+    juce::String soloPctText = juce::String(soloPct) + "%";
+    juce::String chorusPctText = juce::String(chorusPct) + "%";
+
+    lblSoloPct.setText(soloPctText,juce::NotificationType::dontSendNotification);
+    lblChorusPct.setText(chorusPctText, juce::NotificationType::dontSendNotification);
+}
+
 void ChorusFindAudioProcessorEditor::timerCallback()
 {
-    juce::Logger::writeToLog("Timer");
     updateEnableEval();
     updateStatusText();
+    updatePcts(sldChorusAmount.getValue());
 }
