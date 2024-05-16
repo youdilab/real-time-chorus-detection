@@ -89,8 +89,6 @@ private:
         };
 
         //Adding parameters using above lambda functions.
-        addFloatParameter(parameters::volume1);
-        addFloatParameter(parameters::volume2);
         addFloatParameter(parameters::chorusAmount);
         addIntParameter(parameters::chorusState);
 
@@ -100,12 +98,9 @@ private:
     //Accessing parameters.
 
     //Reading parameter values.
-    std::atomic<float>* paramReadVolume1 = nullptr;
-    std::atomic<float>* paramReadVolume2 = nullptr;
+    std::atomic<float>* paramReadChorusAmount = nullptr;    
 
     //Modifying parameter values.
-    juce::RangedAudioParameter* paramVolume1 = nullptr;
-    juce::RangedAudioParameter* paramVolume2 = nullptr;
     juce::RangedAudioParameter* paramChorusAmount = nullptr;
 
     //==============================================================================

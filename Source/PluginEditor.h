@@ -37,8 +37,6 @@ private:
     State& procState;
 
     //GUI components
-    juce::Slider sldVolume1;
-    juce::Slider sldVolume2;
     juce::Slider sldChorusAmount;
 
     juce::TextButton btnEval;
@@ -48,8 +46,6 @@ private:
     juce::Label lblChorusText;
 
     //Parameter-Component attachments
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attchVolume1;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attchVolume2;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attchChorusAmount;
 
     void buttonClicked(juce::Button*) override;

@@ -13,8 +13,6 @@
 ChorusFindAudioProcessorEditor::ChorusFindAudioProcessorEditor (ChorusFindAudioProcessor& p, juce::AudioProcessorValueTreeState& valueTree, State& state)
     : AudioProcessorEditor (&p), audioProcessor (p), apvts(valueTree)
     , procState(state)
-    , sldVolume1(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
-    , sldVolume2(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , sldChorusAmount(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , btnEval(text::textEval)
     , lblSoloText(text::textSolo, text::textSolo)
@@ -22,11 +20,9 @@ ChorusFindAudioProcessorEditor::ChorusFindAudioProcessorEditor (ChorusFindAudioP
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize(400, 400);
+    setSize(400, 200);
 
     //Slider Components
-    addAndMakeVisible(sldVolume1);
-    addAndMakeVisible(sldVolume2);
     addAndMakeVisible(sldChorusAmount);
 
     //Evaluate Button
@@ -40,8 +36,6 @@ ChorusFindAudioProcessorEditor::ChorusFindAudioProcessorEditor (ChorusFindAudioP
     addAndMakeVisible(lblSoloText);
     addAndMakeVisible(lblChorusText);
 
-    attchVolume1.reset(new juce::AudioProcessorValueTreeState::SliderAttachment(apvts, parameters::volume1.id, sldVolume1));
-    attchVolume2.reset(new juce::AudioProcessorValueTreeState::SliderAttachment(apvts, parameters::volume2.id, sldVolume2));
     attchChorusAmount.reset(new juce::AudioProcessorValueTreeState::SliderAttachment(apvts, parameters::chorusAmount.id, sldChorusAmount));
 
     startTimer(100);
@@ -63,16 +57,14 @@ void ChorusFindAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    sldVolume1.setBounds(20, 20, 300, 30);
-    sldVolume2.setBounds(20, 70, 300, 30);
 
-    btnEval.setBounds(20, 120, 150, 30);
+    btnEval.setBounds(20, 30, 150, 30);
 
-    lblStatus.setBounds(20,170,150,30);
+    lblStatus.setBounds(20,80,150,30);
 
-    sldChorusAmount.setBounds(20, 220, 300, 30);
-    lblSoloText.setBounds(20, 230, 100, 30);
-    lblChorusText.setBounds(280, 230, 100, 30);
+    sldChorusAmount.setBounds(20, 130, 300, 30);
+    lblSoloText.setBounds(20, 140, 100, 30);
+    lblChorusText.setBounds(280, 140, 100, 30);
 }
 
 void ChorusFindAudioProcessorEditor::buttonClicked(juce::Button*)

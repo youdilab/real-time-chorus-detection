@@ -36,12 +36,11 @@ namespace parameters
     static const audioParameterFloat volume2{"volume2", "Volume 2", 0, 100, 50};
     static const audioParameterFloat chorusAmount{"chorusAmount", "Chorus Amount", 0, 100, 50};
     static const audioParameterInt chorusState{"state", "State", 0, 2, 0};
-    //static const audioParameterInt state{};
 }
 
 namespace text
 {
-    static const juce::String textEval{"Evaluate..."};
+    static const juce::String textEval{"Evaluate"};
     static const juce::String textStatus{"Status"};
     static const juce::String textSolo{"Solo"};
     static const juce::String textChorus{"Chorus"};
